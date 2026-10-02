@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Bank Customer Churn AI</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+    <link rel="preconnect"
+          href="https://fonts.googleapis.com">
+
+    <link rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+          rel="stylesheet">
+
+</head>
+
+
+<body>
+
+<div class="page-background"></div>
+
+
+<div class="app-container">
+
+
+    <!-- ==================================================
+         TOP NAVIGATION
+    =================================================== -->
+
+    <nav class="navbar">
+
+        <div class="brand">
+
+            <div class="brand-icon">
+                🏦
+            </div>
+
+            <div>
+
+                <h2>ChurnAI</h2>
+
+                <span>Bank Intelligence Platform</span>
+
+            </div>
+
+        </div>
+
+
+        <div class="nav-status">
+
+            <span class="status-dot"></span>
+
+            AI System Online
+
+        </div>
+
+    </nav>
+
+
+
+    <!-- ==================================================
+         HERO SECTION
+    =================================================== -->
+
+    <section class="hero">
+
+        <div class="hero-text">
+
+            <div class="eyebrow">
+                MACHINE LEARNING • CUSTOMER ANALYTICS
+            </div>
+
+            <h1>
+                Bank Customer
+                <span>Churn Prediction</span>
+            </h1>
+
+            <p>
+                Analyze customer behavior and estimate the probability
+                of customer churn using our XGBoost-powered prediction system.
+            </p>
+
+        </div>
+
+
+        <div class="hero-stat">
+
+            <div class="stat-icon">
+                🤖
+            </div>
+
+            <div>
+
+                <strong>XGBoost</strong>
+
+                <span>Production Model</span>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- ==================================================
+         MAIN DASHBOARD
+    =================================================== -->
+
+    <main class="dashboard">
+
+
+        <!-- ==================================================
+             INPUT CARD
+        =================================================== -->
+
+        <section class="card input-card">
+
+            <div class="card-header">
+
+                <div>
+
+                    <span class="section-label">
+                        CUSTOMER PROFILE
+                    </span>
+
+                    <h2>Customer Information</h2>
+
+                    <p>
+                        Enter customer details to calculate churn risk.
+                    </p>
+
+                </div>
+
+                <div class="step-badge">
+                    STEP 01
+                </div>
+
+            </div>
+
+
+
+            <form action="/predict"
+                  method="POST"
+                  id="predictionForm">
+
+
+                <div class="form-grid">
+
+
+                    <!-- CREDIT SCORE -->
+
+                    <div class="form-group">
+
+                        <label>
+                            <span class="input-icon">💳</span>
+                            Credit Score
+                        </label>
+
+                        <input
+                            type="number"
+                            name="CreditScore"
+                            min="300"
+                            max="900"
+                            placeholder="300 - 900"
+                            value="{{ form_data.CreditScore if form_data else '' }}"
+                            required>
+
+                        <small>
+                            Customer creditworthiness
+                        </small>
+
+                    </div>
+
+
+
+                    <!-- GEOGRAPHY -->
+
+                    <div class="form-group">
+
+                        <label>
+                            <span class="input-icon">🌍</span>
+                            Geography
+                        </label>
+
+                        <select name="Geography" required>
+
+                            <option value="">
+                                Select country
+                            </option>
+
+                            <option
+                                value="France"
+                                {% if form_data and form_data.get('Geography') == 'France' %}
+                                selected
+                                {% endif %}>
+                                France
+                            </option>
+
+                            <option
+                                value="Germany"
+                                {% if form_data and form_data.get('Geography') == 'Germany' %}
+                                selected
+                                {% endif %}>
+                                Germany
+                            </option>
+
+                            <option
+                                value="Spain"
+                                {% if form_data and form_data.get('Geography') == 'Spain' %}
+                                selected
+                                {% endif %}>
+                                Spain
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+
+                    <!-- GENDER -->
+
+                    <div class="form-group">
+
+                        <label>
+                            <span class="input-icon">👤</span>
+                            Gender
+                        </label>
+
+                        <select name="Gender" required>
+
+                            <option value="">
+                                Select gender
+                            </option>
+
+                            <option
+                                value="Male"
+                                {% if form_data and form_data.get('Gender') == 'Male' %}
+                                selected
+                                {% endif %}>
+                                Male
+                            </option>
+
+                            <option
+                                value="Female"
+                                {% if form_data and form_data.get('Gender') == 'Female' %}
+                                selected
+                                {% endif %}>
+                                Female
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+
+                    <!-- AGE -->
+
+                    <div class="form-group">
+
+                        <label>
+                            <span class="input-icon">🎂</span>
+                            Age
+                        </label>
+
+                        <input
+                            type="number"
+                            name="Age"
+                            min="18"
+                            max="100"
+                            placeholder="Customer age"
+                            value="{{ form_data.Age if form_data else '' }}"
+                            required>
+
+                    </div>
+
+
+
+                    <!-- TENURE -->
+
+                    <div class="form-group">
+
+                        <label>
+                            <span class="input-icon">📅</span>
+                            Tenure
+                        </label>
+
+                        <input
+                            type="number"
+                            name="Tenure"
+                            min="0"
+                            max="10"
+                            placeholder="0 - 10 years"
+                            value="{{ form_data.Tenure if form_data else '' }}"
+                            required>
+
+                    </div>
+
+
+
+                    <!-- BALANCE -->
+
+                    <div class="form-group">
+
+                        <label>
+                            <span class="input-icon">💰</span>
+                            Account Balance
+                        </label>
+
+                        <input
+                            type="number"
+                            step="0.01"
+                            name="Balance"
+                            min="0"
+                            placeholder="Enter balance"
+                            value="{{ form_data.Balance if form_data else '' }}"
+                            required>
+
+                    </div>
+
+
+
+                    <!-- PRODUCTS -->
+
+                    <div class="form-group">
+
+                        <label>
+                            <span class="input-icon">📦</span>
+                            Number of Products
+                        </label>
+
+                        <input
+                            type="number"
+                            name="NumOfProducts"
+                            min="1"
+                            max="4"
+                            placeholder="1 - 4"
+                            value="{{ form_data.NumOfProducts if form_data else '' }}"
+                            required>
+
+                    </div>
+
+
+
+                    <!-- CREDIT CARD -->
+
+                    <div class="form-group">
+
+                        <label>
+                            <span class="input-icon">💳</span>
+                            Has Credit Card
+                        </label>
+
+                        <select
+                            name="HasCrCard"
+                            required>
+
+                            <option
+                                value="1"
+                                {% if form_data and form_data.get('HasCrCard') == '1' %}
+                                selected
+                                {% endif %}>
+                                Yes
+                            </option>
+
+                            <option
+                                value="0"
+                                {% if form_data and form_data.get('HasCrCard') == '0' %}
+                                selected
+                                {% endif %}>
+                                No
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+
+                    <!-- ACTIVE MEMBER -->
+
+                    <div class="form-group">
+
+                        <label>
+                            <span class="input-icon">⚡</span>
+                            Active Member
+                        </label>
+
+                        <select
+                            name="IsActiveMember"
+                            required>
+
+                            <option
+                                value="1"
+                                {% if form_data and form_data.get('IsActiveMember') == '1' %}
+                                selected
+                                {% endif %}>
+                                Yes
+                            </option>
+
+                            <option
+                                value="0"
+                                {% if form_data and form_data.get('IsActiveMember') == '0' %}
+                                selected
+                                {% endif %}>
+                                No
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+
+                    <!-- SALARY -->
+
+                    <div class="form-group">
+
+                        <label>
+                            <span class="input-icon">💵</span>
+                            Estimated Salary
+                        </label>
+
+                        <input
+                            type="number"
+                            step="0.01"
+                            name="EstimatedSalary"
+                            min="0"
+                            placeholder="Enter salary"
+                            value="{{ form_data.EstimatedSalary if form_data else '' }}"
+                            required>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- BUTTONS -->
+
+                <div class="form-actions">
+
+                    <button
+                        type="button"
+                        class="reset-button"
+                        onclick="resetForm()">
+
+                        ↻ Reset
+
+                    </button>
+
+
+                    <button
+                        type="submit"
+                        class="predict-button"
+                        id="predictButton">
+
+                        <span id="buttonText">
+                            Predict Churn Risk
+                        </span>
+
+                        <span
+                            id="loadingSpinner"
+                            class="spinner">
+                        </span>
+
+                    </button>
+
+                </div>
+
+
+            </form>
+
+        </section>
+
+
+
+        <!-- ==================================================
+             RESULT CARD
+        =================================================== -->
+
+        <section class="card result-card">
+
+            <div class="card-header">
+
+                <div>
+
+                    <span class="section-label">
+                        AI ANALYSIS
+                    </span>
+
+                    <h2>Prediction Result</h2>
+
+                    <p>
+                        Real-time customer churn assessment.
+                    </p>
+
+                </div>
+
+                <div class="step-badge">
+                    STEP 02
+                </div>
+
+            </div>
+
+
+
+            {% if prediction %}
+
+
+            <!-- PREDICTION STATUS -->
+
+            <div class="prediction-status {{ risk_class }}">
+
+                <div class="status-icon">
+
+                    {% if risk_level == "LOW" %}
+                        ✓
+                    {% elif risk_level == "MEDIUM" %}
+                        !
+                    {% else %}
+                        ⚠
+                    {% endif %}
+
+                </div>
+
+                <div>
+
+                    <span>AI Prediction</span>
+
+                    <h3>
+                        {{ prediction }}
+                    </h3>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- PROBABILITY -->
+
+            <div class="probability-section">
+
+                <div class="probability-header">
+
+                    <span>
+                        Churn Probability
+                    </span>
+
+                    <strong>
+                        {{ probability }}%
+                    </strong>
+
+                </div>
+
+
+                <div class="progress-bar">
+
+                    <div
+                        class="progress-fill {{ risk_class }}"
+                        style="width: {{ probability }}%;">
+                    </div>
+
+                </div>
+
+
+                <div class="probability-scale">
+
+                    <span>0%</span>
+
+                    <span>Low Risk</span>
+
+                    <span>50%</span>
+
+                    <span>High Risk</span>
+
+                    <span>100%</span>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- RISK -->
+
+            <div class="risk-display {{ risk_class }}">
+
+                <div>
+
+                    <span>Current Risk Level</span>
+
+                    <strong>
+                        {{ risk_level }}
+                    </strong>
+
+                </div>
+
+                <div class="risk-symbol">
+
+                    {% if risk_level == "LOW" %}
+                        🟢
+                    {% elif risk_level == "MEDIUM" %}
+                        🟡
+                    {% else %}
+                        🔴
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+
+
+            <!-- RECOMMENDATION -->
+
+            <div class="recommendation">
+
+                <div class="recommendation-icon">
+                    💡
+                </div>
+
+                <div>
+
+                    <h3>
+                        Recommended Action
+                    </h3>
+
+                    <p>
+                        {{ recommendation }}
+                    </p>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- MODEL INFO -->
+
+            <div class="model-info">
+
+                <div>
+
+                    <span>MODEL</span>
+
+                    <strong>XGBoost</strong>
+
+                </div>
+
+                <div>
+
+                    <span>THRESHOLD</span>
+
+                    <strong>0.30</strong>
+
+                </div>
+
+                <div>
+
+                    <span>ROC-AUC</span>
+
+                    <strong>0.863</strong>
+
+                </div>
+
+            </div>
+
+
+            {% else %}
+
+
+            <!-- EMPTY STATE -->
+
+            <div class="empty-state">
+
+                <div class="empty-icon">
+                    🤖
+                </div>
+
+                <h3>
+                    Ready for Analysis
+                </h3>
+
+                <p>
+                    Enter the customer information and click
+                    <strong>Predict Churn Risk</strong> to generate
+                    an AI-powered assessment.
+                </p>
+
+                <div class="empty-features">
+
+                    <span>✓ XGBoost</span>
+
+                    <span>✓ 17 Features</span>
+
+                    <span>✓ Real-time Analysis</span>
+
+                </div>
+
+            </div>
+
+            {% endif %}
+
+
+        </section>
+
+    </main>
+
+
+
+    <!-- ==================================================
+         FOOTER
+    =================================================== -->
+
+    <footer>
+
+        <div>
+
+            <strong>ChurnAI</strong>
+
+            <span>
+                Bank Customer Churn Prediction System
+            </span>
+
+        </div>
+
+        <div>
+
+            Powered by Machine Learning
+
+        </div>
+
+    </footer>
+
+
+</div>
+
+
+
+<!-- ==================================================
+     JAVASCRIPT
+=================================================== -->
+
+<script>
+
+const form = document.getElementById("predictionForm");
+
+const button = document.getElementById("predictButton");
+
+const buttonText = document.getElementById("buttonText");
+
+const spinner = document.getElementById("loadingSpinner");
+
+
+form.addEventListener("submit", function () {
+
+    button.disabled = true;
+
+    buttonText.textContent = "Analyzing Customer...";
+
+    spinner.style.display = "inline-block";
+
+});
+
+
+function resetForm() {
+
+    form.reset();
+
+    window.location.href = "/";
+
+}
+
+
+document.querySelectorAll("input, select").forEach(function(element) {
+
+    element.addEventListener("focus", function() {
+
+        this.parentElement.classList.add("focused");
+
+    });
+
+
+    element.addEventListener("blur", function() {
+
+        this.parentElement.classList.remove("focused");
+
+    });
+
+});
+
+
+</script>
+
+
+</body>
+
+</html>
